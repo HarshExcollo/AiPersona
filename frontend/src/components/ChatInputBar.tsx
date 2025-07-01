@@ -11,7 +11,7 @@ const ChatInputBar: React.FC = () => {
     fileInputRef.current?.click();
   };
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', maxWidth: 900, width: '100%', mx: 'auto', px: 3 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
       {/* Mic button */}
       <IconButton
         sx={{

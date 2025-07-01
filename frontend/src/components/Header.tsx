@@ -218,7 +218,18 @@ const Header: React.FC = () => {
           <IconButton onClick={handleSettingsOpen} sx={{ color: '#666' }}>
             <CiSettings size={isMobile ? 20 : 24} />
           </IconButton>
-          <Dialog open={settingsOpen} onClose={handleSettingsClose} maxWidth="md" fullWidth>
+          <Dialog 
+            open={settingsOpen} 
+            onClose={handleSettingsClose} 
+            maxWidth="md" 
+            fullWidth
+            PaperProps={{
+              sx: {
+                borderRadius: 7,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              }
+            }}
+          >
             <SettingsPage />
           </Dialog>
 
@@ -241,7 +252,7 @@ const Header: React.FC = () => {
                 mt: 1,
                 minWidth: 200,
                 boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                borderRadius: 2,
+                borderRadius: 3,
               }
             }}
           >

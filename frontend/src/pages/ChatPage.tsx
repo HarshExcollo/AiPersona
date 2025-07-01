@@ -235,60 +235,6 @@ export default function ChatPage({ onBack }: ChatPageProps) {
             overflow: 'hidden',
           }}
         >
-          {/* Persona Profile - always visible at the top */}
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            cursor: 'pointer', 
-            mb: { xs: 2, sm: 3 },
-            px: { xs: 2, sm: 0 },
-            pt: { xs: 2, sm: 3 },
-            pb: { xs: 1, sm: 2 },
-            zIndex: 2,
-            background: '#fff',
-          }} onClick={handleProfileClick}>
-            <Avatar 
-              src={persona.avatar} 
-              sx={{ 
-                width: { xs: 80, sm: 96 }, 
-                height: { xs: 80, sm: 96 }, 
-                mb: { xs: 1.5, sm: 2 } 
-              }} 
-            />
-            <Typography 
-              variant="h5" 
-              sx={{ 
-                fontWeight: 600, 
-                color: '#222', 
-                mb: 0.5,
-                fontSize: { xs: "20px", sm: "24px" },
-                textAlign: "center"
-              }}
-            >
-              {persona.name}
-            </Typography>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 1, 
-              mb: 0,
-              flexDirection: { xs: "column", sm: "row" }
-            }}>
-              <Typography 
-                variant="subtitle1" 
-                sx={{ 
-                  color: '#2e7d32', 
-                  fontWeight: 400, 
-                  fontSize: { xs: 16, sm: 18 },
-                  textAlign: "center"
-                }}
-              >
-                {persona.role}
-              </Typography>
-              <AutorenewIcon sx={{ color: '#2e7d32', fontSize: { xs: 16, sm: 18 } }} />
-            </Box>
-          </Box>
           {/* Scrollable message list fills the rest of the space */}
           <Box ref={messageListRef} sx={{
             flex: 1,
@@ -317,6 +263,58 @@ export default function ChatPage({ onBack }: ChatPageProps) {
               px: { xs: 2, sm: 0 },
               overflow: 'visible',
             }}>
+              {/* Persona Profile - now scrolls with messages */}
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                cursor: 'pointer', 
+                mb: { xs: 2, sm: 3 },
+                px: { xs: 2, sm: 0 },
+                pt: { xs: 2, sm: 3 },
+                pb: { xs: 1, sm: 2 },
+              }} onClick={handleProfileClick}>
+                <Avatar 
+                  src={persona.avatar} 
+                  sx={{ 
+                    width: { xs: 80, sm: 96 }, 
+                    height: { xs: 80, sm: 96 }, 
+                    mb: { xs: 1.5, sm: 2 } 
+                  }} 
+                />
+                <Typography 
+                  variant="h5" 
+                  sx={{ 
+                    fontWeight: 600, 
+                    color: '#222', 
+                    mb: 0.5,
+                    fontSize: { xs: "20px", sm: "24px" },
+                    textAlign: "center"
+                  }}
+                >
+                  {persona.name}
+                </Typography>
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: 1, 
+                  mb: 0,
+                  flexDirection: { xs: "column", sm: "row" }
+                }}>
+                  <Typography 
+                    variant="subtitle1" 
+                    sx={{ 
+                      color: '#2e7d32', 
+                      fontWeight: 400, 
+                      fontSize: { xs: 16, sm: 18 },
+                      textAlign: "center"
+                    }}
+                  >
+                    {persona.role}
+                  </Typography>
+                  <AutorenewIcon sx={{ color: '#2e7d32', fontSize: { xs: 16, sm: 18 } }} />
+                </Box>
+              </Box>
               {messages.map((msg, idx) => (
                 msg.sender === 'ai' ? (
                   <Box key={idx} sx={{ width: '100%', display: 'flex', justifyContent: 'flex-start', mb: 2 }}>

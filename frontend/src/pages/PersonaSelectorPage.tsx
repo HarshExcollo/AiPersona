@@ -33,7 +33,7 @@ const PersonaSelectorPage: React.FC = () => {
       <Header />
       <PersonaSelectorHeader />
       <Box sx={{ width: '100%', maxWidth: 1300, mx: "auto", mb: 3 }}>
-        <SearchBar value={search} onChange={setSearch} placeholder="Search" maxWidth={700} fullWidth />
+        <SearchBar value={search} onChange={setSearch} placeholder="Search" maxWidth={840} fullWidth />
       </Box>
       <PersonaSelectorGrid personas={filteredPersonas} onSelect={handleSelect} onViewPersona={handleViewPersona} />
       <Box sx={{ height: 32 }} />

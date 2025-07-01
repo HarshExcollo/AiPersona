@@ -50,8 +50,7 @@ const settingsSections = [
 ];
 
 const SettingsPage: React.FC = () => (
-  <Box sx={{ minHeight: '100vh', bgcolor: '#f8f8fa', display: 'flex', justifyContent: 'center', alignItems: 'center', py: 0 }}>
-    <Box sx={{ width: 720, minWidth: 340, maxWidth: '98vw', p: { xs: 1, sm: 2 }, pt: 2, pb: 2, background: 'none', boxShadow: 'none', borderRadius: 0 }}>
+  <Box sx={{ p: 3, overflow: 'hidden' }}>
       {settingsSections.map((section, i) => (
         <Box key={section.header} sx={{ mb: i === settingsSections.length - 1 ? 0 : 2 }}>
           <Typography variant="h6" sx={{ fontWeight: 800, color: '#111', mb: 1.2, fontSize: 22, letterSpacing: -1 }}>{section.header}</Typography>
@@ -76,7 +75,6 @@ const SettingsPage: React.FC = () => (
           </List>
         </Box>
       ))}
-    </Box>
   </Box>
 );
 
