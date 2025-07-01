@@ -2,7 +2,6 @@ import React from "react";
 import {
   AppBar,
   Toolbar,
-  Typography,
   Box,
   IconButton,
   Avatar,
@@ -14,7 +13,7 @@ import {
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import { CiSettings } from "react-icons/ci";
-import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import SettingsPage from '../pages/SettingsPage';

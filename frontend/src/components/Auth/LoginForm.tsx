@@ -10,9 +10,7 @@ import {
 } from "@mui/material";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
-import GoogleIcon from "@mui/icons-material/Google";
 import AppleIcon from "@mui/icons-material/Apple";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const LoginForm: React.FC = () => {

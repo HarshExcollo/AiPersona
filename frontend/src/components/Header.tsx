@@ -23,22 +23,12 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { CiSearch, CiSettings } from "react-icons/ci";
 import { useNavigate, useLocation } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+
 import Popover from '@mui/material/Popover';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsPage from '../pages/SettingsPage';
-
-const menuOptions = [
-  'Marketing',
-  'Technology',
-  'Sales',
-  'Marketing',
-  'Sales',
-  'Technology',
-];
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -46,14 +36,6 @@ const Header: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
   const [profileAnchorEl, setProfileAnchorEl] = React.useState<null | HTMLElement>(null);
   const profileOpen = Boolean(profileAnchorEl);
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {

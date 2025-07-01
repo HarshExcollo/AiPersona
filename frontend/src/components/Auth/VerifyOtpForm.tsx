@@ -8,7 +8,7 @@ const VerifyOtpForm: React.FC = () => {
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const email = "Email@gmail.com";
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx: number) => {
     const value = e.target.value.replace(/[^0-9]/g, "");
     if (!value) return;
     const newOtp = [...otp];
@@ -19,7 +19,7 @@ const VerifyOtpForm: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
+  const handleKeyDown = (e: React.KeyboardEvent, idx: number) => {
     if (e.key === "Backspace" && !otp[idx] && idx > 0) {
       const newOtp = [...otp];
       newOtp[idx - 1] = "";

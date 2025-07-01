@@ -19,7 +19,7 @@ const TwoFactorAuthForm: React.FC<TwoFactorAuthFormProps> = ({ email = "Email@gm
     }
   };
 
-  const handleKeyDown = (idx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (idx: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !code[idx] && idx > 0) {
       inputs[idx - 1].current?.focus();
     }

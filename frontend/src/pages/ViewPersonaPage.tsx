@@ -12,6 +12,11 @@ import ComputerOutlinedIcon from '@mui/icons-material/ComputerOutlined';
 import StorageOutlinedIcon from '@mui/icons-material/StorageOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
+import type { Persona } from "../types";
+
+interface ViewPersonaPageProps {
+  persona: Persona;
+}
 
 const mockPersona = {
   id: "1",
@@ -115,7 +120,7 @@ const mockUpdates = [
   },
 ];
 
-const ViewPersonaPage: React.FC = () => {
+const ViewPersonaPage: React.FC<ViewPersonaPageProps> = ({ persona }) => {
   const [tab, setTab] = useState(0);
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fff" }}>
@@ -124,9 +129,9 @@ const ViewPersonaPage: React.FC = () => {
         <ViewPersonaSidebar personas={similarPersonas} onSelect={() => {}} />
         <Box sx={{ flex: 1, pl: 2 }}>
           <ViewPersonaHeader
-            avatar={mockPersona.avatar}
-            name={mockPersona.name}
-            role={mockPersona.role}
+            avatar={persona.avatar}
+            name={persona.name}
+            role={persona.role}
             onStartChat={() => {}}
           />
           <ViewPersonaTabs value={tab} onChange={setTab} />
@@ -134,7 +139,7 @@ const ViewPersonaPage: React.FC = () => {
             <>
               <ViewPersonaStats stats={mockStats} />
               <ViewPersonaSection title="About">
-                {mockPersona.about.split('\n').map((p, i) => (
+                {mockPersona.about.split('\n').map((p: string, i: number) => (
                   <Box key={i} sx={{ mb: 1 }}><span>{p}</span></Box>
                 ))}
               </ViewPersonaSection>

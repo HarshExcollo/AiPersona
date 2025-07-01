@@ -9,8 +9,7 @@ import {
   Divider,
   Checkbox,
   FormControlLabel,
-  Button,
-  Box
+  Button
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
