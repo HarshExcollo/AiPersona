@@ -33,7 +33,7 @@ const ViewPersonaTabs: React.FC<ViewPersonaTabsProps> = ({ value, onChange }) =>
         },
       }}
     >
-      {tabLabels.map((label, idx) => (
+      {tabLabels.map((label, _) => (
         <Tab key={label} label={label} />
       ))}
     </Tabs>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Chip, IconButton, useTheme, useMediaQuery, Menu, MenuItem } from "@mui/material";
+import { Box, Chip, IconButton, Menu, MenuItem } from "@mui/material";
 import { FilterList as FilterIcon } from "@mui/icons-material";
 import type { FilterOption } from "../types";
 
@@ -18,8 +18,7 @@ const FilterChips: React.FC<FilterChipsProps> = ({
   filters,
   onFilterChange,
 }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, IconButton, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText, ListSubheader, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Typography, IconButton, Button, Avatar, List, ListItem, ListItemAvatar, ListItemText, ListSubheader } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import UploadIcon from '@mui/icons-material/UploadFile';
 import PersonIcon from '@mui/icons-material/PersonOutline';
@@ -21,8 +21,6 @@ const recentChats = [
 
 const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   return (
     <Box sx={{

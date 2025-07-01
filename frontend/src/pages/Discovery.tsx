@@ -2,13 +2,7 @@ import React, { useState, useMemo } from "react";
 import {
   Container,
   Box,
-  useTheme,
-  useMediaQuery,
-  IconButton,
-  Menu,
-  MenuItem,
 } from "@mui/material";
-import { FilterList as FilterIcon } from "@mui/icons-material";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import FilterChips from "../components/FilterChips";
@@ -22,17 +16,12 @@ interface DiscoveryProps {
 }
 
 const SEARCH_AREA_WIDTH = { xs: '100%', sm: 900, md: 1100, lg: 1200 };
-const menuOptions = ['Marketing', 'Technology', 'Sales'];
 
 const Discovery: React.FC<DiscoveryProps> = ({ onStartChat }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<FilterOption[]>(mockFilters);
   const [currentPage, setCurrentPage] = useState(1);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const itemsPerPage = 8;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   // Filter logic
   const filteredPersonas = useMemo(() => {
@@ -78,12 +67,6 @@ const Discovery: React.FC<DiscoveryProps> = ({ onStartChat }) => {
   };
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
   };
 
   return (
