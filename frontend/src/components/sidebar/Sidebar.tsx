@@ -137,7 +137,7 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             }
           />
         </ListItem>
-        <ListItem button sx={{ px: 0, mb: { xs: 1, sm: 1.2 }, minWidth: 0 }} onClick={() => navigate("/view-persona")}>
+        <ListItem button sx={{ px: 0, mb: { xs: 1, sm: 1.2 }, minWidth: 0 }} onClick={() => navigate("/view-persona/1")}>
           <ListItemAvatar sx={{ minWidth: { xs: 40, sm: 32 } }}>
             <PersonIcon sx={{ color: '#222', fontSize: { xs: 24, sm: 22 } }} />
           </ListItemAvatar>
