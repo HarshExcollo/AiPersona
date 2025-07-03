@@ -6,7 +6,7 @@ interface ViewPersonaChipsProps {
 }
 
 const ViewPersonaChips: React.FC<ViewPersonaChipsProps> = ({ chips }) => (
-  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 1 }}>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 1, maxWidth: '100%' }}>
     {chips.map((chip) => (
       <Chip
         key={chip}
@@ -19,6 +19,12 @@ const ViewPersonaChips: React.FC<ViewPersonaChipsProps> = ({ chips }) => (
           borderRadius: 2,
           px: 1.5,
           height: 34,
+          maxWidth: '100%',
+          '& .MuiChip-label': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }
         }}
       />
     ))}

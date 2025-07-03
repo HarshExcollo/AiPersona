@@ -7,6 +7,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { useNavigate } from "react-router-dom";
+import { mockPersonas } from "../../data/mockData";
 
 const favoritePersonas = [
   { name: "David Lee", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
@@ -19,7 +20,7 @@ const recentChats = [
   "Roadmap"
 ];
 
-const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
+const Sidebar: React.FC<{ onClose?: () => void; currentPersonaId?: string }> = ({ onClose, currentPersonaId }) => {
   const navigate = useNavigate();
   
   return (
@@ -137,7 +138,7 @@ const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             }
           />
         </ListItem>
-        <ListItem button sx={{ px: 0, mb: { xs: 1, sm: 1.2 }, minWidth: 0 }} onClick={() => navigate("/view-persona/1")}>
+        <ListItem button sx={{ px: 0, mb: { xs: 1, sm: 1.2 }, minWidth: 0 }} onClick={() => navigate(`/view-persona/${currentPersonaId || mockPersonas[0].id}`)}>
           <ListItemAvatar sx={{ minWidth: { xs: 40, sm: 32 } }}>
             <PersonIcon sx={{ color: '#222', fontSize: { xs: 24, sm: 22 } }} />
           </ListItemAvatar>

@@ -217,7 +217,7 @@ export default function ChatPage({ onBack }: ChatPageProps) {
       }}>
         {/* Sidebar - only this should scroll */}
         {sidebarOpen && (
-          <Sidebar onClose={handleSidebarClose} />
+          <Sidebar onClose={handleSidebarClose} currentPersonaId={persona.id} />
         )}
 
         {/* Main chat area wrapper */}

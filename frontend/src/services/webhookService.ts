@@ -6,6 +6,7 @@ export interface WebhookMessage {
   persona_id: string;
   persona_name: string;
   user_id?: string;
+  session_id: string;
   timestamp: string;
 }
 
@@ -20,18 +21,36 @@ interface GenericResponse {
   [key: string]: unknown;
 }
 
+// Generate or retrieve a session ID
+const getSessionId = (): string => {
+  let sessionId = localStorage.getItem('chat_session_id');
+  
+  if (!sessionId) {
+    // Generate a simple UUID-like string
+    sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
+    localStorage.setItem('chat_session_id', sessionId);
+  }
+  
+  return sessionId;
+};
+
 export const sendToWebhook = async (message: string, personaId: string, personaName: string): Promise<string> => {
   try {
+    // Get or create session ID
+    const sessionId = getSessionId();
+    
     const payload: WebhookMessage = {
       message: message,
       persona_id: personaId,
       persona_name: personaName,
       user_id: "current_user", // You can extend this to get actual user ID
+      session_id: sessionId,
       timestamp: new Date().toISOString()
     };
 
     console.log('🚀 Sending to webhook:', WEBHOOK_URL);
     console.log('👤 Persona:', personaName, `(ID: ${personaId})`);
+    console.log('🔑 Session ID:', sessionId);
     console.log('📦 Payload:', JSON.stringify(payload, null, 2));
 
     const response = await fetch(WEBHOOK_URL, {
@@ -98,12 +117,18 @@ export const isWebhookPersona = (personaId: string): boolean => {
 // Test function to check if webhook is active
 export const testWebhookConnection = async (): Promise<boolean> => {
   try {
+    // Get or create session ID
+    const sessionId = getSessionId();
+    
     const response = await fetch(WEBHOOK_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ test: "connection_check" })
+      body: JSON.stringify({ 
+        test: "connection_check",
+        session_id: sessionId
+      })
     });
     
     return response.ok;

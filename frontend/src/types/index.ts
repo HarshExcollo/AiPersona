@@ -5,6 +5,8 @@ export interface Persona {
   department: "Tech" | "Marketing" | "Sales";
   avatar: string;
   hasStartChat?: boolean;
+  about?: string;
+  communication?: string;
 }
 
 export interface FilterOption {

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Box, Container, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Container, Typography, CircularProgress } from "@mui/material";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import ViewPersonaSidebar from "../components/viewPersona/ViewPersonaSidebar";
 import ViewPersonaHeader from "../components/viewPersona/ViewPersonaHeader";
@@ -15,7 +16,22 @@ import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
 import type { Persona } from "../types";
 
 interface ViewPersonaPageProps {
-  persona: Persona;
+  persona?: Persona;
+}
+
+interface Trait {
+  _id: string;
+  title: string;
+  category: string;
+  description: string;
+}
+
+interface PersonaData {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  traits: Trait[];
 }
 
 const mockPersona = {
@@ -120,14 +136,261 @@ const mockUpdates = [
   },
 ];
 
-const ViewPersonaPage: React.FC<ViewPersonaPageProps> = ({ persona }) => {
+const ViewPersonaPage: React.FC<ViewPersonaPageProps> = ({ persona: propPersona }) => {
+  const { id } = useParams<{ id: string }>();
   const [tab, setTab] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [personaData, setPersonaData] = useState<PersonaData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPersonaData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`http://localhost:5000/api/personas/${id || '1'}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch persona data');
+        }
+        
+        const data = await response.json();
+        if (data.success && data.data) {
+          setPersonaData(data.data);
+        } else {
+          throw new Error('Invalid response format');
+        }
+      } catch (err) {
+        console.error('Error fetching persona:', err);
+        setError('Failed to load persona data. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchPersonaData();
+  }, [id]);
+
+  // Find trait by title
+  const getTraitByTitle = (title: string) => {
+    if (!personaData?.traits) return null;
+    return personaData.traits.find(trait => 
+      trait.title.toLowerCase() === title.toLowerCase()
+    );
+  };
+
+  // Get about section content
+  const getAboutContent = () => {
+    const aboutTrait = getTraitByTitle('About');
+    return aboutTrait?.description || mockPersona.about;
+  };
+
+  // Get communication style content
+  const getCommunicationStyleContent = () => {
+    const communicationTrait = getTraitByTitle('Communication Style');
+    return communicationTrait?.description || mockPersona.communication;
+  };
+
+  // Get core expertise content
+  const getCoreExpertiseItems = () => {
+    const expertiseTrait = getTraitByTitle('Core Expertise');
+    if (!expertiseTrait?.description) return mockExpertise;
+    
+    // Check if the description contains numbered items like "1) text" or "1. text"
+    const numberedItemRegex = /^\d+[\s.)-]/;
+    const hasNumberedItems = numberedItemRegex.test(expertiseTrait.description);
+    
+    if (hasNumberedItems) {
+      // Split by new lines first for numbered lists
+      const items = expertiseTrait.description
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        // Remove the numbering from each item
+        .map(item => item.replace(/^\d+[\s.)-]/, '').trim());
+      
+      return items.length > 0 ? items : mockExpertise;
+    }
+    
+    // First try to split by bullet points
+    let bullets = expertiseTrait.description
+      .split('•')
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+    
+    // If no bullet points found, try splitting by new lines
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === expertiseTrait.description)) {
+      bullets = expertiseTrait.description
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+    }
+    
+    // If still no items found, try splitting by periods followed by space or newline
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === expertiseTrait.description)) {
+      bullets = expertiseTrait.description
+        .split(/\.\s|\.\n/)
+        .map(item => item.trim())
+        .filter(item => item.length > 0)
+        .map(item => item + (item.endsWith('.') ? '' : '.'));
+    }
+    
+    // Clean up any remaining numbered list prefixes
+    bullets = bullets.map(item => item.replace(/^\d+[\s.)-]/, '').trim());
+    
+    return bullets.length > 0 ? bullets : mockExpertise;
+  };
+
+  // Get traits content
+  const getTraitsItems = () => {
+    const traitsTrait = getTraitByTitle('Traits');
+    if (!traitsTrait?.description) return mockTraits;
+    
+    // First try to split by bullet points
+    let bullets = traitsTrait.description
+      .split('•')
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+    
+    // If no bullet points found, try splitting by new lines
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === traitsTrait.description)) {
+      bullets = traitsTrait.description
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+    }
+    
+    // If still no items found, try splitting by numbered list format (1), 2), etc.)
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === traitsTrait.description)) {
+      // Match patterns like "1)", "2)", "3)..." with any amount of spacing
+      const numberedListRegex = /\d+\s*\)/g;
+      const matches = traitsTrait.description.match(numberedListRegex);
+      
+      if (matches && matches.length > 0) {
+        // Split by numbered list markers
+        bullets = traitsTrait.description
+          .split(numberedListRegex)
+          .map(item => item.trim())
+          .filter(item => item.length > 0);
+      }
+    }
+    
+    // Clean up any remaining numbered list prefixes
+    bullets = bullets.map(item => item.replace(/^\d+[\s.)-]/, '').trim());
+    
+    return bullets.length > 0 ? bullets : mockTraits;
+  };
+
+  // Get pain points content
+  const getPainPointsItems = () => {
+    const painPointsTrait = getTraitByTitle('Pain Points');
+    if (!painPointsTrait?.description) return mockPainPoints;
+    
+    // First try to split by bullet points
+    let bullets = painPointsTrait.description
+      .split('•')
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+    
+    // If no bullet points found, try splitting by new lines
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === painPointsTrait.description)) {
+      bullets = painPointsTrait.description
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+    }
+    
+    // If still no items found, try splitting by numbered list format (1), 2), etc.)
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === painPointsTrait.description)) {
+      // Match patterns like "1)", "2)", "3)..." with any amount of spacing
+      const numberedListRegex = /\d+\s*\)/g;
+      const matches = painPointsTrait.description.match(numberedListRegex);
+      
+      if (matches && matches.length > 0) {
+        // Split by numbered list markers
+        bullets = painPointsTrait.description
+          .split(numberedListRegex)
+          .map(item => item.trim())
+          .filter(item => item.length > 0);
+      }
+    }
+    
+    // Clean up any remaining numbered list prefixes
+    bullets = bullets.map(item => item.replace(/^\d+[\s.)-]/, '').trim());
+    
+    return bullets.length > 0 ? bullets : mockPainPoints;
+  };
+
+  // Get key responsibilities content
+  const getKeyResponsibilitiesItems = () => {
+    const responsibilitiesTrait = getTraitByTitle('Key Responsibilities');
+    if (!responsibilitiesTrait?.description) return mockResponsibilities;
+    
+    // First try to split by bullet points
+    let bullets = responsibilitiesTrait.description
+      .split('•')
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+    
+    // If no bullet points found, try splitting by new lines
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === responsibilitiesTrait.description)) {
+      bullets = responsibilitiesTrait.description
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+    }
+    
+    // If still no items found, try splitting by numbered list format (1), 2), etc.)
+    if (bullets.length === 0 || (bullets.length === 1 && bullets[0] === responsibilitiesTrait.description)) {
+      // Match patterns like "1)", "2)", "3)..." with any amount of spacing
+      const numberedListRegex = /\d+\s*\)/g;
+      const matches = responsibilitiesTrait.description.match(numberedListRegex);
+      
+      if (matches && matches.length > 0) {
+        // Split by numbered list markers
+        bullets = responsibilitiesTrait.description
+          .split(numberedListRegex)
+          .map(item => item.trim())
+          .filter(item => item.length > 0);
+      }
+    }
+    
+    // Clean up any remaining numbered list prefixes
+    bullets = bullets.map(item => item.replace(/^\d+[\s.)-]/, '').trim());
+    
+    return bullets.length > 0 ? bullets : mockResponsibilities;
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ minHeight: "100vh", bgcolor: "#fff", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ minHeight: "100vh", bgcolor: "#fff", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
+
+  // Use either the prop persona or the fetched persona data
+  const persona = propPersona || personaData || mockPersona;
+
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fff" }}>
       <Header />
       <Container maxWidth={false} sx={{ display: 'flex', pt: 4, pb: 6, maxWidth: 1200 }}>
-        <ViewPersonaSidebar personas={similarPersonas} onSelect={() => {}} />
-        <Box sx={{ flex: 1, pl: 2 }}>
+        <ViewPersonaSidebar 
+          personas={similarPersonas} 
+          onSelect={(personaId) => {
+            window.location.href = `/view-persona/${personaId}`;
+          }} 
+          currentPersonaId={id} 
+        />
+        <Box sx={{ flex: 1, pl: 2, maxWidth: 'calc(100% - 280px)', overflowX: 'hidden' }}>
           <ViewPersonaHeader
             avatar={persona.avatar}
             name={persona.name}
@@ -139,27 +402,29 @@ const ViewPersonaPage: React.FC<ViewPersonaPageProps> = ({ persona }) => {
             <>
               <ViewPersonaStats stats={mockStats} />
               <ViewPersonaSection title="About">
-                {mockPersona.about.split('\n').map((p: string, i: number) => (
-                  <Box key={i} sx={{ mb: 1 }}><span>{p}</span></Box>
+                {getAboutContent().split('\n').map((p: string, i: number) => (
+                  <Box key={i} sx={{ mb: 1, overflowWrap: 'break-word' }}><span>{p}</span></Box>
                 ))}
               </ViewPersonaSection>
               <ViewPersonaSection title="Core Expertise">
-                <ViewPersonaChips chips={mockExpertise} />
+                <ViewPersonaChips chips={getCoreExpertiseItems()} />
               </ViewPersonaSection>
               <ViewPersonaSection title="Communication Style">
-                <span>{mockPersona.communication}</span>
+                <Box sx={{ overflowWrap: 'break-word' }}>
+                  <span>{getCommunicationStyleContent()}</span>
+                </Box>
               </ViewPersonaSection>
             </>
           )}
           {tab === 1 && (
             <>
               <ViewPersonaSection title="Traits">
-                <ViewPersonaChips chips={mockTraits} />
+                <ViewPersonaChips chips={getTraitsItems()} />
               </ViewPersonaSection>
               <ViewPersonaSection title="Pain Points">
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                  {mockPainPoints.map((point) => (
-                    <Box key={point} sx={{ border: '1.5px solid #e0e0e0', borderRadius: 2, p: 2.2, minWidth: 260, fontWeight: 500, fontSize: 16, color: '#222', bgcolor: '#fff', flex: '1 1 260px' }}>
+                  {getPainPointsItems().map((point) => (
+                    <Box key={point} sx={{ border: '1.5px solid #e0e0e0', borderRadius: 2, p: 2.2, minWidth: 260, maxWidth: '100%', fontWeight: 500, fontSize: 16, color: '#222', bgcolor: '#fff', flex: '1 1 260px', overflowWrap: 'break-word' }}>
                       {point}
                     </Box>
                   ))}
@@ -167,8 +432,8 @@ const ViewPersonaPage: React.FC<ViewPersonaPageProps> = ({ persona }) => {
               </ViewPersonaSection>
               <ViewPersonaSection title="Key Responsibilities">
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                  {mockResponsibilities.map((resp) => (
-                    <Box key={resp} sx={{ border: '1.5px solid #e0e0e0', borderRadius: 2, p: 2.2, minWidth: 260, fontWeight: 500, fontSize: 16, color: '#222', bgcolor: '#fff', flex: '1 1 260px' }}>
+                  {getKeyResponsibilitiesItems().map((resp) => (
+                    <Box key={resp} sx={{ border: '1.5px solid #e0e0e0', borderRadius: 2, p: 2.2, minWidth: 260, maxWidth: '100%', fontWeight: 500, fontSize: 16, color: '#222', bgcolor: '#fff', flex: '1 1 260px', overflowWrap: 'break-word' }}>
                       {resp}
                     </Box>
                   ))}
@@ -237,7 +502,6 @@ const ViewPersonaPage: React.FC<ViewPersonaPageProps> = ({ persona }) => {
               </Box>
             </>
           )}
-          {/* Add other tab content as needed */}
         </Box>
       </Container>
     </Box>

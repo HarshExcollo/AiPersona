@@ -11,14 +11,26 @@ interface SimilarPersona {
 interface ViewPersonaSidebarProps {
   personas: SimilarPersona[];
   onSelect: (id: string) => void;
+  currentPersonaId?: string;
 }
 
-const ViewPersonaSidebar: React.FC<ViewPersonaSidebarProps> = ({ personas, onSelect }) => (
+const ViewPersonaSidebar: React.FC<ViewPersonaSidebarProps> = ({ personas, onSelect, currentPersonaId }) => (
   <Box sx={{ width: 220, pt: 4, pr: 3 }}>
     <Typography sx={{ fontWeight: 800, fontSize: 18, mb: 2, color: '#222' }}>Similar Personas</Typography>
     <List>
       {personas.map((p) => (
-        <ListItem key={p.id} button onClick={() => onSelect(p.id)} sx={{ borderRadius: 2, mb: 0.5, '&:hover': { background: '#f5f5f7' }, px: 1 }}>
+        <ListItem 
+          key={p.id} 
+          button 
+          onClick={() => onSelect(p.id)} 
+          sx={{ 
+            borderRadius: 2, 
+            mb: 0.5, 
+            '&:hover': { background: '#f5f5f7' }, 
+            px: 1,
+            background: p.id === currentPersonaId ? '#f0f0f2' : 'transparent'
+          }}
+        >
           <ListItemAvatar>
             <Avatar src={p.avatar} sx={{ width: 44, height: 44, mr: 1 }} />
           </ListItemAvatar>
